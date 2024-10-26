@@ -4,11 +4,11 @@ import database as db
 from geopy import Photon
 
 geolocator = Photon(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
-bot = telebot.TeleBot(token="7595209141:AAFHyqefmWLIu7tZzZgd7GnyYFIiIkhyBxQ")
+bot = telebot.TeleBot(token="7Q")
 
-db.add_product("Бургер", 20000, "лучший бургер", 10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2535-40OVw2m6L8Auogu_w8LFXJfvV_XNw&s")
-db.add_product("Чизбургер", 25000, "лучший чизбургер", 10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2535-40OVw2m6L8Auogu_w8LFXJfvV_XNw&s")
-db.add_product("Хот-дог", 15000, "лучший хот-дог", 0, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2535-40OVw2m6L8Auogu_w8LFXJfvV_XNw&s")
+# db.add_product("Бургер", 20000, "лучший бургер", 10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2535-40OVw2m6L8Auogu_w8LFXJfvV_XNw&s")
+# db.add_product("Чизбургер", 25000, "лучший чизбургер", 10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2535-40OVw2m6L8Auogu_w8LFXJfvV_XNw&s")
+# db.add_product("Хот-дог", 15000, "лучший хот-дог", 0, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf2535-40OVw2m6L8Auogu_w8LFXJfvV_XNw&s")
 
 @bot.message_handler(commands=["start"])
 def start(message):
@@ -61,13 +61,24 @@ def all_cals(call):
         bot.delete_message(user_id, call.message.message_id)
         bot.send_message(user_id, "Главное меню: ",
                          reply_markup=bt.main_menu_kb())
-
+@bot.callback_query_handler(lambda call: "prod_" in call.data)
+def get_prod_info(call):
+    user_id = call.message.chat.id
+    bot.delete_message(user_id, call.message.message_id)
+    product_id = int(call.data.replace("prod_", ""))
+    product_info = db.get_exact_product(product_id)
+    # сохранить информацию о продукте и его количестве
+    bot.send_photo(user_id, photo=product_info[3], caption=f"{product_info[0]}\n\n"
+                                                           f"{product_info[2]}\n"
+                                                           f"Цена: {product_info[1]}",
+                   reply_markup=bt.plus_minus_in())
 
 @bot.message_handler(content_types=["text"])
 def main_menu(message):
     user_id = message.from_user.id
     if message.text == "🍴Меню":
         all_products = db.get_pr_id_name()
+        print(all_products)
         bot.send_message(user_id, "Выберите продукт:", reply_markup=bt.products_in(all_products))
     elif message.text == "🛒Корзина":
         bot.send_message(user_id, "Ваша корзина: ")
