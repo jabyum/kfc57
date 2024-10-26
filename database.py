@@ -69,6 +69,7 @@ def get_pr_id_name():
     # фильтрация продуктов которых больше 0
     actual_products = [[product[0], product[1]] for product in all_products if product[2] > 0]
     return actual_products
+#ads
 
 def delete_all_products():
     connection = sqlite3.connect("fake_kfc.db")
