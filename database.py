@@ -69,7 +69,6 @@ def get_pr_id_name():
     # фильтрация продуктов которых больше 0
     actual_products = [[product[0], product[1]] for product in all_products if product[2] > 0]
     return actual_products
-#ads
 
 def delete_all_products():
     connection = sqlite3.connect("fake_kfc.db")
@@ -107,9 +106,16 @@ def delete_exact_product_from_cart(user_id, pr_id):
                 (user_id, pr_id))
     connection.commit()
 # очищение корзины юзера
-def delete_user_cart(): # укажите параметры
-    pass
+def delete_user_cart(user_id):
+    connection = sqlite3.connect("fake_kfc.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM cart WHERE user_id=?;", (user_id, ))
+    connection.commit()
 # получение информации для меню корзины в формате
 # (Название продукта ; количество ; цена)
-def get_user_cart(): # укажите параметры
-    pass
+def get_user_cart(user_id):
+    connection = sqlite3.connect("fake_kfc.db")
+    sql = connection.cursor()
+    user_cart = sql.execute("SELECT pr_name, pr_count, total_price FROM cart "
+                            "WHERE user_id=?;", (user_id,)).fetchall()
+    return user_cart
