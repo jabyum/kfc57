@@ -1,5 +1,10 @@
+# установка языка программирования в контейнере
 FROM python:3.12
+# создаем рабочую папку
 WORKDIR /app
+# копируем проект в эту папку
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
+# что необходимо сделать перед запуском
+RUN pip install -r requirements.txt
+# команда для запуска проекта
 CMD ["python", "bot.py"]
