@@ -4,7 +4,7 @@ import database as db
 from geopy import Photon
 
 geolocator = Photon(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
-bot = telebot.TeleBot(token="7614865117:AAEN_s1UlI3CGqI9zdZoEn0-k1NbFpuuY0k")
+bot = telebot.TeleBot(token="")
 users = {}
 @bot.message_handler(commands=["start"])
 def start(message):
